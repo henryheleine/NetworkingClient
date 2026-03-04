@@ -61,13 +61,3 @@ extension String {
         return isoFormatter.date(from: self) ?? Date()
     }
 }
-
-extension Date {
-    var isoFormatter: ISO8601DateFormatter {
-        return ISO8601DateFormatter()
-    }
-    
-    public func dateToString() -> String {
-        return isoFormatter.string(from: self)
-    }
-}
