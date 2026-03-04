@@ -2,41 +2,34 @@
 // https://docs.swift.org/swift-book
 
 import Foundation
-import pingx
 
 public actor NetworkingClient {
     let key = "networking.data"
-    let pinger: AsyncPinger
-    let request: Request
+    var request: URLRequest
     var history: [String: Double]
     public static let shared = NetworkingClient()
     
-    public init(pinger: AsyncPinger = AsyncPinger(configuration: PingConfiguration(intervalBetweenRequests: .seconds(5.0 * 60.0))),
-         request: Request = Request(destination: IPv4Address(address: (8, 8, 8, 8)), timeoutInterval: .seconds(60), demand: .unlimited),
-                 history: [String: Double] = [:]) {
-        self.pinger = pinger
+    public init(request: URLRequest = URLRequest(url: URL(string: "https://render-4ezx.onrender.com/upload/\(Int.random(in: 0...1000000))")!), history: [String: Double] = [:]) {
         self.request = request
+        self.request.httpMethod = "POST"
         self.history = history
     }
     
     public func profile() async {
-        let sequence = pinger.ping(request: request)
-
+        let start = Date()
         do {
-            for try await result in sequence {
-                switch result {
-                case .success(let response):
-                    print(response.duration)
-                    let dateAsString = Date().ISO8601Format()
-                    history[dateAsString] = response.duration.seconds
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-                UserDefaults.standard.set(history, forKey: key)
-            }
-        } catch(let error) {
+            let _ = try await URLSession.shared.data(for: request)
+            let duration = Date().timeIntervalSince(start)
+            self.saveAndUpdateHistory(duration: duration)
+        } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    public func saveAndUpdateHistory(duration: Double) {
+        let date = Date().ISO8601Format()
+        history[date] = duration
+        UserDefaults.standard.set(history, forKey: key)
     }
     
     public func averageDurationPerHour() -> [Date: Double] {

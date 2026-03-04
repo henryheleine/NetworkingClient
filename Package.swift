@@ -15,17 +15,11 @@ let package = Package(
             targets: ["NetworkingClient"]
         ),
     ],
-    dependencies: [
-        .package(url: "https://github.com/shineRR/pingx", .upToNextMajor(from: "1.1.0"))
-    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "NetworkingClient",
-            dependencies: [
-                .product(name: "pingx", package: "pingx")
-            ]
+            name: "NetworkingClient"
         ),
         .testTarget(
             name: "NetworkingClientTests",
