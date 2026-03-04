@@ -4,7 +4,7 @@
 import Foundation
 import pingx
 
-actor NetworkingClient {
+public actor NetworkingClient {
     let key = "networking.data"
     let pinger: AsyncPinger
     let request: Request
