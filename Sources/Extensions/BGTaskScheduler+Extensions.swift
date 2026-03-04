@@ -10,7 +10,7 @@ import Foundation
 
 extension BGTaskScheduler {
     
-    public static var bgTaskId {
+    public static func bgTaskId() -> String {
         if let bundleID = Bundle.main.bundleIdentifier {
             return "\(bundleID).backgroundTask"
         }
